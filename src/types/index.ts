@@ -28,6 +28,7 @@ export interface GiftSet {
   rating?: number;
   reviewsCount?: number;
   badge?: string;
+  theme?: string; // e.g. 'christmas', 'birthday', 'tet', 'anniversary'
 }
 
 export interface CartItem {

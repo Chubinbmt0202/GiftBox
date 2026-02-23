@@ -29,7 +29,8 @@ export const mockSets: GiftSet[] = [
         image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=600&auto=format&fit=crop',
         rating: 4.9,
         reviewsCount: 120,
-        badge: '16% off'
+        badge: '16% off',
+        theme: 'birthday'
     },
     {
         id: 's2',
@@ -41,7 +42,8 @@ export const mockSets: GiftSet[] = [
         image: 'https://images.unsplash.com/photo-1512389142860-9c44db72aeb4?q=80&w=600&auto=format&fit=crop',
         rating: 4.8,
         reviewsCount: 85,
-        badge: '12% off'
+        badge: '12% off',
+        theme: 'christmas'
     },
     {
         id: 's3',
@@ -52,7 +54,32 @@ export const mockSets: GiftSet[] = [
         image: 'https://images.unsplash.com/photo-1518199268815-95a206eb26fe?q=80&w=600&auto=format&fit=crop',
         rating: 5.0,
         reviewsCount: 200,
-        badge: 'Hot'
+        badge: 'Hot',
+        theme: 'anniversary'
+    },
+    {
+        id: 's4',
+        name: 'Set Quà Tết Đoàn Viên',
+        price: 550000,
+        originalPrice: 650000,
+        description: 'Hộp quà cao cấp với các loại hạt, trà thơm, mứt Tết và phong bao lì xì may mắn.',
+        items: ['Hộp trà Lài', 'Mứt Gừng', 'Hạt Macca', 'Bao lì xì thiết kế riêng'],
+        image: 'https://images.unsplash.com/photo-1547053508-3162fb52cfbc?q=80&w=600&auto=format&fit=crop',
+        rating: 4.9,
+        reviewsCount: 150,
+        badge: 'Bestseller',
+        theme: 'tet'
+    },
+    {
+        id: 's5',
+        name: 'Set Quà Just For You',
+        price: 200000,
+        description: 'Món quà tự thưởng bản thân hoặc gửi tặng người thân yêu vào một ngày bình thường.',
+        items: ['Ly sứ vintage', 'Sổ tay kraft', 'Bút gỗ khắc tên'],
+        image: 'https://images.unsplash.com/photo-1584988296765-a8647240c5b5?q=80&w=600&auto=format&fit=crop',
+        rating: 4.7,
+        reviewsCount: 45,
+        theme: 'general'
     }
 ];
 
