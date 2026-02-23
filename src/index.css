@@ -3,6 +3,11 @@
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
+  --font-fredoka: 'Fredoka', sans-serif;
+  
+  --color-boonie-bg: #FFFBE6;
+  --color-boonie-pink: #FF6B98;
+  --color-boonie-text: #4C3C34;
   
   --color-primary-50: #fdf8f6;
   --color-primary-100: #f2e8e5;
