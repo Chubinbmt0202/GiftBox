@@ -115,10 +115,16 @@ const Products: React.FC = () => {
             <div className="space-y-3">
               {mockCategories.slice(0, 6).map(cat => (
                 <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w - 4 h - 4 border rounded - sm flex items - center justify - center transition - colors ${selectedCategories.includes(cat.id) ? 'bg-green-800 border-green-800' : 'border-gray-300 group-hover:border-green-800'} `}>
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={selectedCategories.includes(cat.id)}
+                    onChange={() => handleCategoryChange(cat.id)}
+                  />
+                  <div className={`w-4 h-4 border rounded-sm flex items-center justify-center transition-colors ${selectedCategories.includes(cat.id) ? 'bg-green-800 border-green-800' : 'border-gray-300 group-hover:border-green-800'}`}>
                     {selectedCategories.includes(cat.id) && <Check size={12} className="text-white" strokeWidth={3} />}
                   </div>
-                  <span className={`text - [13px] ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-800'} `}>
+                  <span className={`text-[13px] ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-800'}`}>
                     {cat.name}
                   </span>
                 </label>

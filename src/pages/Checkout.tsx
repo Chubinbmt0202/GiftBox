@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useLocation, Link, Navigate } from "react-router-dom";
-import { ArrowLeft, Package, Sparkles, MailOpen, AlertCircle, CheckCircle } from "lucide-react";
+import { useLocation, Link } from "react-router-dom";
+import { ArrowLeft, Sparkles, AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 interface CheckoutState {
