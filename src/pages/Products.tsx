@@ -1,7 +1,7 @@
-```
+
 import React, { useState } from 'react';
-import { 
-  Search, ShoppingBag, User, Heart, Facebook, Twitter, Instagram, 
+import {
+  Search, ShoppingBag, User, Heart, Facebook, Twitter, Instagram,
   Youtube, Maximize, Star, ChevronDown, Check, X, Truck, CreditCard, HeadphonesIcon
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -26,12 +26,12 @@ const Products: React.FC = () => {
   };
 
   const handleCategoryChange = (catId: string) => {
-    setSelectedCategories(prev => 
+    setSelectedCategories(prev =>
       prev.includes(catId) ? prev.filter(c => c !== catId) : [...prev, catId]
     );
   };
 
-  const currentProducts = selectedCategories.length > 0 
+  const currentProducts = selectedCategories.length > 0
     ? mockProducts.filter(p => selectedCategories.includes(p.categoryId))
     : mockProducts;
 
@@ -56,7 +56,7 @@ const Products: React.FC = () => {
           <div className="w-8 h-8 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: theme.greenAccent }}>B</div>
           Boomie Shop.
         </Link>
-        
+
         <nav className="hidden md:flex gap-8 text-sm font-semibold text-gray-700">
           <Link to="/" className="hover:text-green-800 transition-colors">Home</Link>
           <Link to="/products" className="text-green-800 border-b-2 border-green-800 pb-1">Shop</Link>
@@ -92,19 +92,19 @@ const Products: React.FC = () => {
         </div>
         {/* Decorative dots based on image */}
         <div className="absolute top-4 left-[10%] md:left-[20%] opacity-20 text-4xl tracking-widest text-gray-400">
-          <span className="tracking-[6px]">•••••</span><br/>
-          <span className="tracking-[6px]">.••••</span><br/>
+          <span className="tracking-[6px]">•••••</span><br />
+          <span className="tracking-[6px]">.••••</span><br />
           <span className="tracking-[6px]">..•••</span>
         </div>
         <div className="absolute bottom-4 right-[10%] md:right-[20%] opacity-20 text-4xl tracking-widest text-gray-400 text-right">
-          <span className="tracking-[6px]">•••••</span><br/>
-          <span className="tracking-[6px]">••••.</span><br/>
+          <span className="tracking-[6px]">•••••</span><br />
+          <span className="tracking-[6px]">••••.</span><br />
           <span className="tracking-[6px]">•••..</span>
         </div>
       </div>
 
       <main className="max-w-[1400px] mx-auto px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-10">
-        
+
         {/* SIDEBAR FILTERS */}
         <div className="w-full lg:w-[250px] shrink-0">
           <h2 className="font-bold text-lg mb-6 text-gray-900">Filter Options</h2>
@@ -115,10 +115,10 @@ const Products: React.FC = () => {
             <div className="space-y-3">
               {mockCategories.slice(0, 6).map(cat => (
                 <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w - 4 h - 4 border rounded - sm flex items - center justify - center transition - colors ${ selectedCategories.includes(cat.id) ? 'bg-green-800 border-green-800' : 'border-gray-300 group-hover:border-green-800' } `}>
+                  <div className={`w - 4 h - 4 border rounded - sm flex items - center justify - center transition - colors ${selectedCategories.includes(cat.id) ? 'bg-green-800 border-green-800' : 'border-gray-300 group-hover:border-green-800'} `}>
                     {selectedCategories.includes(cat.id) && <Check size={12} className="text-white" strokeWidth={3} />}
                   </div>
-                  <span className={`text - [13px] ${ selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-800' } `}>
+                  <span className={`text - [13px] ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-800'} `}>
                     {cat.name}
                   </span>
                 </label>
@@ -156,7 +156,7 @@ const Products: React.FC = () => {
             <div className="space-y-3">
               {[5, 4, 3, 2, 1].map(stars => (
                 <label key={stars} className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w - 4 h - 4 border rounded - sm flex items - center justify - center transition - colors ${ stars === 5 ? 'bg-yellow-400 border-yellow-400' : 'border-gray-200 group-hover:border-yellow-400' } `}>
+                  <div className={`w - 4 h - 4 border rounded - sm flex items - center justify - center transition - colors ${stars === 5 ? 'bg-yellow-400 border-yellow-400' : 'border-gray-200 group-hover:border-yellow-400'} `}>
                     {stars === 5 && <Check size={12} className="text-white" strokeWidth={3} />}
                   </div>
                   <div className="flex gap-[2px] text-yellow-400">
@@ -176,7 +176,7 @@ const Products: React.FC = () => {
             <div className="space-y-3">
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div className="w-4 h-4 border bg-green-800 border-green-800 rounded-sm flex items-center justify-center">
-                  <Check size={12} className="text-white" strokeWidth={3}/>
+                  <Check size={12} className="text-white" strokeWidth={3} />
                 </div>
                 <span className="text-[13px] text-gray-900 font-medium">In Stock</span>
               </label>
@@ -190,7 +190,7 @@ const Products: React.FC = () => {
 
         {/* MAIN PRODUCT GRID AREA */}
         <div className="flex-1">
-          
+
           {/* Top Controls */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div className="text-[14px] text-gray-500 font-medium">Showing 1-{currentProducts.length} of {mockProducts.length} results</div>
@@ -228,7 +228,7 @@ const Products: React.FC = () => {
                   {/* Image Container */}
                   <div className="relative aspect-square md:aspect-[4/5] mb-4 bg-[#F2EDE7] rounded-xl overflow-hidden shadow-sm">
                     <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 mixture-blend-multiply" />
-                    
+
                     {/* Badge */}
                     {product.badge && (
                       <div className="absolute top-3 left-3 px-3 py-1 text-[11px] font-bold text-white rounded-full tracking-wide shadow-sm" style={{ backgroundColor: theme.topBarBg }}>
@@ -321,4 +321,3 @@ const Products: React.FC = () => {
 };
 
 export default Products;
-```
