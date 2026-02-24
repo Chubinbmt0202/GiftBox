@@ -5,7 +5,7 @@ export function ClientLayout() {
     return (
         <div className="min-h-screen flex flex-col bg-boonie-bg font-fredoka text-boonie-text">
             {/* Navbar */}
-            <header className="sticky top-0 z-50 w-full pt-4 pb-2 backdrop-blur-md">
+            <header className="sticky top-0 z-50 w-full backdrop-blur-md">
                 <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
                     {/* Left: Logo & Nav */}
                     <div className="flex items-center gap-12 border-none">
