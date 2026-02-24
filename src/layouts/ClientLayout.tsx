@@ -1,9 +1,26 @@
 import { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { Menu, Smile, Search, User, ShoppingBag, Gift, X } from "lucide-react";
 
 export function ClientLayout() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { user, role, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleUserClick = async () => {
+        if (!user) {
+            navigate('/login');
+        } else {
+            if (role === 'admin') {
+                navigate('/admin');
+            } else {
+                if (window.confirm('Bạn có muốn đăng xuất không?')) {
+                    await logout();
+                }
+            }
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col bg-boonie-bg font-fredoka text-boonie-text">
@@ -49,7 +66,7 @@ export function ClientLayout() {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#FF6B98] shadow-sm hover:shadow-md transition-shadow">
+                            <button onClick={handleUserClick} className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#FF6B98] shadow-sm hover:shadow-md transition-shadow">
                                 <User className="w-5 h-5" strokeWidth={2.5} />
                             </button>
                             <button className="w-12 h-12 rounded-full bg-[#FF6B98] flex items-center justify-center text-white shadow-sm hover:shadow-md transition-shadow relative">

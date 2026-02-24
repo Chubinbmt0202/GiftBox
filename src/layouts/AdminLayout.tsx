@@ -1,36 +1,133 @@
-import { Outlet, Link } from "react-router-dom";
-import { LayoutDashboard, Package, Settings, Users, LogOut } from "lucide-react";
+import { Outlet, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+    LayoutDashboard,
+    ShoppingCart,
+    Package,
+    Users,
+    BarChart2,
+    Settings,
+    LogOut,
+    Search,
+    Bell,
+    HelpCircle
+} from "lucide-react";
 
 export function AdminLayout() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { logout } = useAuth();
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/login');
+        } catch (error) {
+            console.error('Failed to log out', error);
+        }
+    };
+
+    const navItems = [
+        { path: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
+        { path: "/admin/orders", icon: ShoppingCart, label: "Orders", exact: false },
+        { path: "/admin/products", icon: Package, label: "Products", exact: false },
+        { path: "/admin/customers", icon: Users, label: "Customers", exact: false },
+        { path: "/admin/analytics", icon: BarChart2, label: "Analytics", exact: false },
+    ];
+
+    const systemItems = [
+        { path: "/admin/settings", icon: Settings, label: "Settings", exact: false },
+    ];
+
+    // Map path to title for the header, or we can just read it from the active nav label
+    const activeNavItem = [...navItems, ...systemItems].find(item => {
+        if (item.exact) return location.pathname === item.path;
+        return location.pathname.startsWith(item.path);
+    });
+    const pageTitle = activeNavItem ? activeNavItem.label : "Admin Dashboard";
+
     return (
-        <div className="min-h-screen flex bg-primary-50">
+        <div className="min-h-screen flex bg-[#f8f9fa] font-sans">
+
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-primary-100 flex flex-col hidden md:flex">
-                <div className="h-16 flex items-center px-6 border-b border-primary-100">
-                    <Link to="/admin" className="font-serif text-xl font-bold text-primary-900 tracking-tight">Miloo Admin</Link>
+            <aside className="w-[260px] bg-white border-r border-gray-100 flex-col hidden md:flex shrink-0">
+
+                {/* Logo Area */}
+                <div className="h-16 flex items-center px-6 mb-2">
+                    <Link to="/admin" className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-[#0066ff] rounded-lg flex items-center justify-center">
+                            <Package className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="font-bold text-[18px] text-gray-900 tracking-tight">AdminDash</span>
+                    </Link>
                 </div>
 
-                <nav className="flex-1 px-4 py-6 space-y-1">
-                    <Link to="/admin" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg bg-primary-100 text-primary-900">
-                        <LayoutDashboard className="w-5 h-5" />
-                        Dashboard
-                    </Link>
-                    <Link to="/admin/orders" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-primary-600 hover:bg-primary-50 hover:text-primary-900 transition-colors">
-                        <Package className="w-5 h-5" />
-                        Orders
-                    </Link>
-                    <Link to="/admin/customers" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-primary-600 hover:bg-primary-50 hover:text-primary-900 transition-colors">
-                        <Users className="w-5 h-5" />
-                        Customers
-                    </Link>
-                    <Link to="/admin/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-primary-600 hover:bg-primary-50 hover:text-primary-900 transition-colors">
-                        <Settings className="w-5 h-5" />
-                        Settings
-                    </Link>
-                </nav>
+                {/* User Info (Optional, like in Image 4/5) */}
+                <div className="px-6 mb-6 flex items-center gap-3">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=ffd8cc&color=d9534f" alt="Admin" className="w-10 h-10 rounded-full" />
+                    <div>
+                        <p className="text-sm font-bold text-gray-900 leading-tight">Admin User</p>
+                        <p className="text-[12px] text-gray-500 font-medium">Super Admin</p>
+                    </div>
+                </div>
 
-                <div className="p-4 border-t border-primary-100">
-                    <button className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 transition-colors">
+                {/* Navigation */}
+                <div className="flex-1 overflow-y-auto w-full px-4">
+                    <nav className="space-y-1 mb-8">
+                        {navItems.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                                <NavLink
+                                    key={item.path}
+                                    to={item.path}
+                                    end={item.exact}
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] font-semibold transition-colors ${isActive
+                                            ? "bg-[#f0f6ff] text-[#0066ff]"
+                                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                                        }`
+                                    }
+                                >
+                                    <Icon className="w-5 h-5" />
+                                    {item.label}
+                                </NavLink>
+                            );
+                        })}
+                    </nav>
+
+                    <div className="mb-2">
+                        <h4 className="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                            System
+                        </h4>
+                        <nav className="space-y-1">
+                            {systemItems.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                    <NavLink
+                                        key={item.path}
+                                        to={item.path}
+                                        className={({ isActive }) =>
+                                            `flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] font-semibold transition-colors ${isActive
+                                                ? "bg-[#f0f6ff] text-[#0066ff]"
+                                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                                            }`
+                                        }
+                                    >
+                                        <Icon className="w-5 h-5" />
+                                        {item.label}
+                                    </NavLink>
+                                );
+                            })}
+                        </nav>
+                    </div>
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="p-4 mt-auto">
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 w-full px-3 py-2.5 text-[14px] font-semibold rounded-xl text-red-600 hover:bg-red-50 transition-colors"
+                    >
                         <LogOut className="w-5 h-5" />
                         Sign Out
                     </button>
@@ -38,16 +135,48 @@ export function AdminLayout() {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col">
-                <header className="h-16 bg-white border-b border-primary-100 flex items-center justify-between px-6 md:px-8">
-                    <h1 className="text-xl font-semibold text-primary-900">Dashboard</h1>
-                    <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-full bg-primary-200 flex items-center justify-center text-primary-700 font-medium text-sm">
-                            AD
+            <div className="flex-1 flex flex-col min-w-0">
+
+                {/* Top Header */}
+                <header className="h-[72px] bg-white border-b border-gray-100 flex items-center justify-between px-6 lg:px-10 shrink-0 sticky top-0 z-10 w-full">
+
+                    <div className="flex items-center gap-6 flex-1">
+                        <h1 className="text-xl font-bold text-gray-900 hidden lg:block mr-2 w-48 truncate">{pageTitle}</h1>
+
+                        {/* Search Bar */}
+                        <div className="relative max-w-md w-full hidden md:block">
+                            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                className="w-full pl-9 pr-4 py-2 bg-[#f8f9fa] border-none rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066ff]/20 placeholder:text-gray-400 font-medium"
+                            />
                         </div>
                     </div>
+
+                    <div className="flex items-center gap-2 pl-4">
+                        <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors hidden sm:block">
+                            <HelpCircle className="w-5 h-5" />
+                        </button>
+                        <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors mr-2">
+                            <Bell className="w-5 h-5" />
+                            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                        </button>
+
+                        <div className="h-8 w-[1px] bg-gray-200 mx-2 hidden sm:block"></div>
+
+                        <button className="flex items-center gap-2 pl-2">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=ffd8cc&color=d9534f" alt="Admin" className="w-8 h-8 rounded-full border border-gray-100 shadow-sm" />
+                            <div className="hidden sm:flex flex-col items-start translate-y-0.5">
+                                <span className="text-[13px] font-bold text-gray-800 leading-none">Admin User</span>
+                                <span className="text-[11px] font-medium text-gray-500 leading-tight">Super Admin</span>
+                            </div>
+                        </button>
+                    </div>
                 </header>
-                <main className="flex-1 p-6 md:p-8 overflow-auto">
+
+                {/* Page Content */}
+                <main className="flex-1 p-6 lg:p-10 overflow-auto">
                     <Outlet />
                 </main>
             </div>
