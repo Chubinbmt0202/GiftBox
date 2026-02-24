@@ -6,6 +6,7 @@ import { BuildABox } from './pages/BuildABox';
 import { Checkout } from './pages/Checkout';
 import { ReadyToShip } from './pages/ReadyToShip';
 import { ProductDetail } from './pages/ProductDetail';
+import { Products } from './pages/Products';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route element={<ClientLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/ready-to-ship" element={<ReadyToShip />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/build-a-box" element={<BuildABox />} />

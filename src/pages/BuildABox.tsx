@@ -94,7 +94,7 @@ export function BuildABox() {
         <div className="min-h-screen bg-boonie-bg p-4 md:p-8 flex justify-center font-sans text-boonie-text">
             <div className="w-full max-w-[1600px] flex flex-col lg:flex-row gap-8 items-start">
                 {/* Left Sidebar (Sticky) */}
-                <div className="w-full lg:w-[360px] flex flex-col gap-2 shrink-0 z-10 sticky top-8">
+                <div className="w-full lg:w-[360px] flex flex-col gap-2 shrink-0 z-10 sticky top-[115px] h-[calc(100vh-115px)]">
                     <BuildABoxHeader
                         currentStep={currentStep}
                         setCurrentStep={setCurrentStep}
@@ -119,6 +119,7 @@ export function BuildABox() {
                             }
                             setCurrentStep(prev => prev + 1);
                         }}
+                        onBack={() => setCurrentStep(2)}
                         onComplete={() => {
                             navigate("/checkout", {
                                 state: { selectedBox, selectedItems, selectedCard, totalPrice }

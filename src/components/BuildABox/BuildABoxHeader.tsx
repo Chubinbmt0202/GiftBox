@@ -18,10 +18,10 @@ export function BuildABoxHeader({ currentStep, setCurrentStep, selectedBox }: Pr
         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100/50">
             <div className="flex items-center justify-between relative px-2">
                 {/* Horizontal connecting line */}
-                <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[2px] bg-gray-100 z-0"></div>
+                <div className="absolute left-10 right-10 top-1/2 -translate-y-[18px] h-[2px] bg-gray-100 z-0"></div>
                 <div
-                    className="absolute left-6 top-1/2 -translate-y-1/2 h-[2px] bg-boonie-pink z-0 transition-all duration-300"
-                    style={{ width: currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : '100%' }}
+                    className="absolute left-10 top-1/2 -translate-y-[18px] h-[2px] bg-boonie-pink z-0 transition-all duration-300"
+                    style={{ width: currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : 'calc(100% - 5rem)' }}
                 ></div>
 
                 {steps.map((step) => {
