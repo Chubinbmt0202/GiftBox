@@ -54,7 +54,7 @@ export function Home() {
                                         <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6 transform translate-y-1"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
                                     </div>
                                     <div className="w-10 h-10 rounded-full bg-blue-50 border-2 border-boonie-bg flex items-center justify-center overflow-hidden z-20">
-                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4" alt="avatar" className="w-full h-full object-cover" />
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4" alt="avatar" className="w-full h-full object-cover" loading="lazy" />
                                     </div>
                                     <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-boonie-bg z-10 flex items-center justify-center overflow-hidden">
                                         <div className="w-full h-full bg-gray-300"></div>
@@ -80,6 +80,8 @@ export function Home() {
                                     alt="Black gift box with ribbon"
                                     className="w-full h-full object-cover opacity-90"
                                     style={{ objectPosition: 'center 60%' }}
+                                    fetchPriority="high"
+                                    loading="eager"
                                 />
                             </div>
 

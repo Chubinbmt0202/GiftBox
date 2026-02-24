@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 import type { Box, SelectedProduct, Product } from "../components/BuildABox/data";
 import { getProducts } from "../services/productService";
@@ -111,7 +112,7 @@ export function BuildABox() {
     const handleBoxSelect = (box: Box) => {
         setSelectedBox(box);
         if (totalItemsQuantity > box.capacity) {
-            alert(`Cảnh báo: Hộp mới chỉ chứa được ${box.capacity} món, bạn hiện đang chọn ${totalItemsQuantity} món!`);
+            toast.error(`Cảnh báo: Hộp mới chỉ chứa được ${box.capacity} món, bạn hiện đang chọn ${totalItemsQuantity} món!`);
         }
         setCurrentStep(2);
     };
@@ -119,12 +120,12 @@ export function BuildABox() {
     const handleItemAdd = (product: any, e: React.MouseEvent) => {
         e.stopPropagation();
         if (!selectedBox) {
-            alert("Vui lòng chọn hộp trước khi thêm sản phẩm.");
+            toast.error("Vui lòng chọn hộp trước khi thêm sản phẩm.");
             setCurrentStep(1);
             return;
         }
         if (totalItemsQuantity >= selectedBox.capacity) {
-            alert("Hộp đã đầy! Không thể thêm sản phẩm.");
+            toast.error("Hộp đã đầy! Không thể thêm sản phẩm.");
             return;
         }
 
@@ -171,7 +172,7 @@ export function BuildABox() {
                         onChangeBox={() => setCurrentStep(1)}
                         onNext={() => {
                             if (currentStep === 1 && !selectedBox) {
-                                alert("Vui lòng chọn vỏ hộp trước khi tiếp tục!");
+                                toast.error("Vui lòng chọn vỏ hộp trước khi tiếp tục!");
                                 return;
                             }
                             setCurrentStep(prev => prev + 1);

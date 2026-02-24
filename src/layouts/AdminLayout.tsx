@@ -1,5 +1,9 @@
+import { useState, useEffect, useRef } from "react";
 import { Outlet, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { subscribeToNotifications, markNotificationAsRead, markAllNotificationsAsRead, type NotificationData } from "../services/notificationService";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
     LayoutDashboard,
     ShoppingCart,
@@ -11,13 +15,53 @@ import {
     Search,
     Bell,
     HelpCircle,
-    Tags
+    Tags,
+    CheckCircle2
 } from "lucide-react";
 
 export function AdminLayout() {
     const location = useLocation();
     const navigate = useNavigate();
     const { logout } = useAuth();
+    const [notifications, setNotifications] = useState<(NotificationData & { id: string })[]>([]);
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const notifRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const unsubscribe = subscribeToNotifications((data) => {
+            setNotifications(data);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+                setIsNotifOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    const handleNotificationClick = async (notif: NotificationData & { id: string }) => {
+        if (!notif.read) {
+            await markNotificationAsRead(notif.id);
+        }
+        if (notif.link) {
+            navigate(notif.link);
+            setIsNotifOpen(false);
+        }
+    };
+
+    const handleMarkAllRead = async () => {
+        const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
+        if (unreadIds.length > 0) {
+            await markAllNotificationsAsRead(unreadIds);
+        }
+    };
 
     const handleLogout = async () => {
         try {
@@ -154,10 +198,63 @@ export function AdminLayout() {
                         <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors hidden sm:block">
                             <HelpCircle className="w-5 h-5" />
                         </button>
-                        <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors mr-2">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                        </button>
+                        <div className="relative" ref={notifRef}>
+                            <button
+                                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                                className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors mr-2"
+                            >
+                                <Bell className="w-5 h-5" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] font-bold text-white leading-none">
+                                        {unreadCount > 9 ? '9+' : unreadCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* Dropdown Notification Menu */}
+                            {isNotifOpen && (
+                                <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                                    <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                                        <h3 className="font-bold text-gray-900">Thông báo</h3>
+                                        {unreadCount > 0 && (
+                                            <button
+                                                onClick={handleMarkAllRead}
+                                                className="text-xs font-semibold text-[#0066ff] hover:text-[#0052cc] flex items-center gap-1"
+                                            >
+                                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                                Đánh dấu đã đọc
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="max-h-[360px] overflow-y-auto">
+                                        {notifications.length === 0 ? (
+                                            <div className="p-6 text-center text-sm text-gray-500 font-medium">Chưa có thông báo nào</div>
+                                        ) : (
+                                            <div className="divide-y divide-gray-50">
+                                                {notifications.map((notif) => (
+                                                    <div
+                                                        key={notif.id}
+                                                        onClick={() => handleNotificationClick(notif)}
+                                                        className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors block ${!notif.read ? 'bg-blue-50/30' : ''}`}
+                                                    >
+                                                        <div className="flex gap-3">
+                                                            <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${!notif.read ? 'bg-[#0066ff]' : 'bg-transparent'}`}></div>
+                                                            <div>
+                                                                <p className={`text-sm ${!notif.read ? 'text-gray-900 font-bold' : 'text-gray-700 font-medium'}`}>{notif.title}</p>
+                                                                <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{notif.message}</p>
+                                                                <p className="text-[10px] font-semibold text-gray-400 mt-2 uppercase tracking-wide">
+                                                                    {notif.createdAt?.toDate ? formatDistanceToNow(notif.createdAt.toDate(), { addSuffix: true, locale: vi }) : 'Vừa xong'}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
                         <div className="h-8 w-[1px] bg-gray-200 mx-2 hidden sm:block"></div>
 

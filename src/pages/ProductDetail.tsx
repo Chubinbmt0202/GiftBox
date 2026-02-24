@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import type { Product } from '../services/productService';
 import type { GiftSet } from '../types';
 import { getProductById } from '../services/productService';
+import toast from "react-hot-toast";
 
 export function ProductDetail() {
     const { id } = useParams<{ id: string }>();
@@ -187,7 +188,7 @@ export function ProductDetail() {
                                     size="lg"
                                     disabled={productItem ? productItem.status === 'Out of Stock' : false}
                                     className={`flex-1 h-14 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 ${productItem?.status === 'Out of Stock' ? 'bg-gray-400 cursor-not-allowed text-white hover:transform-none' : ''}`}
-                                    onClick={() => alert('Đã thêm vào giỏ hàng!')}
+                                    onClick={() => toast.success('Đã thêm vào giỏ hàng!')}
                                 >
                                     <ShoppingBag className="w-5 h-5 mr-2" /> {productItem?.status === 'Out of Stock' ? 'Tạm hết hàng' : 'Thêm vào giỏ hàng'}
                                 </Button>

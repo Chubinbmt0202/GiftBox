@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { ArrowLeft, Sparkles, AlertCircle, CheckCircle, Shield, Loader2 } from "lucide-react";
+import { Lock, ArrowLeft, Truck, Package, Heart, Check, Loader2, AlertCircle, CheckCircle, Shield, Sparkles } from "lucide-react";
+import toast from "react-hot-toast";
+import { createNotification } from "../services/notificationService";
 import { Button } from "../components/ui/button";
 import { createOrder, type OrderData } from "../services/orderService";
 
@@ -53,7 +55,7 @@ export function Checkout() {
 
     const handleOrderSubmit = async () => {
         if (!customerInfo.fullName || !customerInfo.phone || !customerInfo.address) {
-            alert("Vui lòng điền đầy đủ các trường thông tin giao hàng có dấu (*)");
+            toast.error("Vui lòng điền đầy đủ các trường thông tin giao hàng có dấu (*)");
             setCurrentStep(2);
             return;
         }
@@ -82,13 +84,24 @@ export function Checkout() {
                 totalAmount: totalPrice,
             };
 
-            await createOrder(orderData);
-            alert("Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.");
-            // Ideally redirect back to home or a success page:
-            // window.location.href = '/';
+            const orderDocId = await createOrder(orderData);
+            toast.success("Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.");
+
+            // Create a realtime notification for Admin
+            await createNotification({
+                title: "Đơn hàng mới!",
+                message: `Khách hàng ${customerInfo.fullName} vừa đặt một đơn hàng trị giá $${totalPrice.toFixed(2)}.`,
+                type: 'new_order',
+                link: `/admin/orders/${orderDocId}`
+            });
+
+            // Redirect to home after 2 seconds
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
         } catch (error) {
             console.error("Order submit failed:", error);
-            alert("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sáu.");
+            toast.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
         } finally {
             setIsSubmitting(false);
         }

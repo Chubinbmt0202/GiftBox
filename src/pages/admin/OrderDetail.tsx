@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, MapPin, Phone, Mail, FileText, CreditCard, Package, Loader2 } from "lucide-react";
 import { getOrderById, updateOrderStatus, type OrderData } from "../../services/orderService";
+import { createNotification } from "../../services/notificationService";
+import toast from "react-hot-toast";
 
 export function AdminOrderDetail() {
     const { id } = useParams<{ id: string }>();
@@ -82,11 +84,21 @@ export function AdminOrderDetail() {
         setIsUpdatingStatus(true);
         try {
             await updateOrderStatus(id, newStatus);
-            setOrder({ ...order, status: newStatus });
-            alert("Đã cập nhật trạng thái đơn hàng thành công!");
+            setOrder({ ...order, status: newStatus as any });
+
+            toast.success("Đã cập nhật trạng thái đơn hàng thành công!");
+
+            // Create notification log for this action
+            await createNotification({
+                title: "Trạng thái đơn hàng cập nhật",
+                message: `Đơn hàng #${id.slice(0, 6)} vừa được chuyển sang: ${newStatus}`,
+                type: 'info',
+                link: `/admin/orders/${id}`
+            });
+
         } catch (error) {
-            console.error("Lỗi khi cập nhật trạng thái:", error);
-            alert("Có lỗi xảy ra khi cập nhật trạng thái. Vui lòng thử lại!");
+            console.error("Error updating status:", error);
+            toast.error("Có lỗi xảy ra khi cập nhật trạng thái. Vui lòng thử lại!");
         } finally {
             setIsUpdatingStatus(false);
         }
