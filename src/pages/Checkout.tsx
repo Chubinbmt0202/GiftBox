@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Lock, ArrowLeft, Truck, Package, Heart, Check, Loader2, AlertCircle, CheckCircle, Shield, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, CheckCircle, Shield, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { createNotification } from "../services/notificationService";
 import { Button } from "../components/ui/button";
