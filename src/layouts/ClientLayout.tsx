@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
-import { Menu, Smile, Search, User, ShoppingBag, Gift } from "lucide-react";
+import { Menu, Smile, Search, User, ShoppingBag, Gift, X } from "lucide-react";
 
 export function ClientLayout() {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     return (
         <div className="min-h-screen flex flex-col bg-boonie-bg font-fredoka text-boonie-text">
             {/* Navbar */}
@@ -10,7 +13,10 @@ export function ClientLayout() {
                     {/* Left: Logo & Nav */}
                     <div className="flex items-center gap-12 border-none">
                         <div className="flex items-center gap-4">
-                            <button className="md:hidden p-2 hover:text-boonie-pink transition-colors">
+                            <button
+                                className="lg:hidden p-2 hover:text-boonie-pink transition-colors -ml-2"
+                                onClick={() => setIsMobileMenuOpen(true)}
+                            >
                                 <Menu className="w-6 h-6" />
                             </button>
                             <Link to="/" className="flex items-center gap-2 group">
@@ -55,6 +61,44 @@ export function ClientLayout() {
                         </div>
                     </div>
                 </div>
+
+                {/* Mobile Menu Drawer */}
+                {isMobileMenuOpen && (
+                    <div className="fixed inset-0 z-[100] lg:hidden">
+                        <div className="absolute inset-0 bg-black/50" onClick={() => setIsMobileMenuOpen(false)} />
+                        <div className="absolute top-0 left-0 w-3/4 max-w-sm h-full bg-white shadow-xl flex flex-col pt-6 px-6">
+                            <div className="flex items-center justify-between mb-8">
+                                <Link to="/" className="flex items-center gap-2 group" onClick={() => setIsMobileMenuOpen(false)}>
+                                    <div className="w-8 h-8 bg-[#FF6B98] rounded-full flex items-center justify-center">
+                                        <Smile className="w-5 h-5 text-white" strokeWidth={2.5} />
+                                    </div>
+                                    <span className="font-fredoka text-[24px] font-bold tracking-tight text-[#FF6B98] mt-1">boonie</span>
+                                </Link>
+                                <button className="p-2 hover:text-boonie-pink" onClick={() => setIsMobileMenuOpen(false)}>
+                                    <X className="w-6 h-6" />
+                                </button>
+                            </div>
+
+                            <nav className="flex flex-col gap-6 mt-4">
+                                <Link to="/ready-to-ship" className="text-xl font-bold text-boonie-text hover:text-boonie-pink" onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
+                                <Link to="/build-a-box" className="text-xl font-bold text-boonie-text hover:text-boonie-pink" onClick={() => setIsMobileMenuOpen(false)}>Build the Box</Link>
+                                <Link to="/products" className="text-xl font-bold text-boonie-text hover:text-boonie-pink" onClick={() => setIsMobileMenuOpen(false)}>Products</Link>
+                                <Link to="/about" className="text-xl font-bold text-boonie-text hover:text-boonie-pink" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+                            </nav>
+
+                            <div className="mt-12 flex items-center relative">
+                                <input
+                                    type="text"
+                                    placeholder="Find happiness..."
+                                    className="w-full h-12 pl-6 pr-12 rounded-full border border-gray-200 focus:border-boonie-pink focus:ring-1 focus:ring-boonie-pink text-[15px] font-medium bg-white shadow-sm placeholder:text-gray-400 outline-none"
+                                />
+                                <button className="absolute right-4 text-[#FF6B98] hover:scale-110 transition-transform">
+                                    <Search className="w-5 h-5" strokeWidth={2.5} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </header>
 
             {/* Main Content */}

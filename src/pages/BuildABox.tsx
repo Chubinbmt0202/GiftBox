@@ -92,9 +92,9 @@ export function BuildABox() {
 
     return (
         <div className="min-h-screen bg-boonie-bg p-4 md:p-8 flex justify-center font-sans text-boonie-text">
-            <div className="w-full max-w-[1600px] flex flex-col lg:flex-row gap-8 items-start">
-                {/* Left Sidebar (Sticky) */}
-                <div className="w-full lg:w-[360px] flex flex-col gap-2 shrink-0 z-10 sticky top-[115px] h-[calc(100vh-115px)]">
+            <div className="w-full max-w-[1600px] flex flex-col lg:flex-row gap-8 items-start relative pb-32 lg:pb-0">
+                {/* Left Sidebar (Sticky on Desktop) */}
+                <div className="w-full lg:w-[360px] flex flex-col gap-2 shrink-0 z-10 lg:sticky top-[115px] lg:h-[calc(100vh-115px)]">
                     <BuildABoxHeader
                         currentStep={currentStep}
                         setCurrentStep={setCurrentStep}

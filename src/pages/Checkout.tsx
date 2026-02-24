@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { ArrowLeft, Sparkles, AlertCircle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Sparkles, AlertCircle, CheckCircle, Shield } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 interface CheckoutState {
@@ -205,6 +205,55 @@ export function Checkout() {
                                 </div>
                             </div>
                         )}
+                    </div>
+
+                    {/* Right Column: Order Summary (Sticky) */}
+                    <div className="lg:col-span-5 xl:col-span-4">
+                        <div className="bg-white p-6 md:p-8 rounded-3xl border border-primary-100 shadow-sm sticky top-28">
+                            <h2 className="text-xl font-serif font-bold text-primary-900 mb-6">Tóm tắt đơn hàng</h2>
+
+                            <div className="space-y-4 mb-6">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-primary-600">Hộp quà ({selectedBox.name})</span>
+                                    <span className="font-medium text-primary-900">${selectedBox.price}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-primary-600">Sản phẩm ({selectedItems.reduce((acc, item) => acc + item.quantity, 0)} món)</span>
+                                    <span className="font-medium text-primary-900">${selectedItems.reduce((acc, item) => acc + (item.price * item.quantity), 0)}</span>
+                                </div>
+                                {selectedCard && (
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-primary-600">Thiệp ({selectedCard.name})</span>
+                                        <span className="font-medium text-primary-900">${selectedCard.price}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="h-px bg-primary-100 w-full mb-6" />
+
+                            <div className="space-y-3 mb-6">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-primary-600">Tạm tính</span>
+                                    <span className="font-medium text-primary-900">${totalPrice}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-primary-600">Phí giao hàng</span>
+                                    <span className="font-medium text-green-600">Miễn phí</span>
+                                </div>
+                            </div>
+
+                            <div className="h-px bg-primary-100 w-full mb-6" />
+
+                            <div className="flex justify-between items-end mb-8">
+                                <span className="font-serif font-bold text-lg text-primary-900">Tổng cộng</span>
+                                <span className="font-serif font-bold text-3xl text-primary-900">${totalPrice}</span>
+                            </div>
+
+                            <div className="bg-primary-50 p-4 rounded-xl flex items-start gap-3 text-sm text-primary-700">
+                                <Shield className="w-5 h-5 text-primary-500 shrink-0" />
+                                <p>Thông tin thanh toán của bạn được bảo mật an toàn với chuẩn mã hóa SSL.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

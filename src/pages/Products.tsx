@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { ChevronDown, Star, Heart, Maximize, ShoppingBag } from 'lucide-react';
+import { ChevronDown, Star, Heart, Maximize, ShoppingBag, Filter, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { mockCategories, mockProducts } from '../data/mockData';
 
 export function Products() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
   const handleCategoryChange = (catId: string) => {
     setSelectedCategories(prev =>
       prev.includes(catId) ? prev.filter(c => c !== catId) : [...prev, catId]
@@ -19,31 +21,61 @@ export function Products() {
     <div className="min-h-screen bg-[#fffdf5] font-sans p-4 md:p-8 flex justify-center text-boonie-text">
       <div className="w-full max-w-[1600px] flex flex-col lg:flex-row gap-8 items-start">
 
-        {/* Left Sidebar */}
-        <div className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6 sticky top-28">
-          {/* Categories Block */}
-          <div className="bg-white rounded-xl p-6 border-2 border-[#fff3b0]/50 shadow-sm">
-            <h3 className="font-fredoka font-bold text-xl text-gray-900 mb-4">Categories</h3>
+        {/* Mobile Filter Button */}
+        <div className="lg:hidden w-full flex justify-end mb-4">
+          <button
+            className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm text-sm font-bold font-sans text-gray-700"
+            onClick={() => setIsMobileFilterOpen(true)}
+          >
+            <Filter className="w-4 h-4" /> Filters
+          </button>
+        </div>
 
-            {/* Dashed line */}
-            <div className="w-full border-t border-dashed border-[#fff3b0] mb-5"></div>
+        {/* Left Sidebar (Desktop) / Mobile Drawer */}
+        <div className={`
+          fixed inset-0 z-[100] lg:relative lg:z-auto lg:inset-auto lg:block
+          ${isMobileFilterOpen ? 'block' : 'hidden'}
+        `}>
+          {/* Mobile Overlay */}
+          <div
+            className="absolute inset-0 bg-black/50 lg:hidden"
+            onClick={() => setIsMobileFilterOpen(false)}
+          />
 
-            <div className="flex flex-col gap-4">
-              {mockCategories.slice(0, 10).map((cat) => {
-                const count = Math.floor(Math.random() * 30) + 5; // Placeholder
-                return (
-                  <label key={cat.id} className="flex items-center justify-between cursor-pointer group" onClick={() => handleCategoryChange(cat.id)}>
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <span className={`text-[15px] font-semibold font-sans truncate ${selectedCategories.includes(cat.id) ? 'text-boonie-pink' : 'text-gray-700 group-hover:text-boonie-pink'}`}>
-                        {cat.name}
+          <div className="absolute top-0 right-0 w-4/5 max-w-[320px] h-full bg-white lg:bg-transparent lg:static lg:w-[360px] lg:h-auto overflow-y-auto lg:overflow-visible flex flex-col pt-6 lg:pt-0 sticky lg:top-28 z-10 transition-transform">
+
+            {/* Mobile Header */}
+            <div className="flex items-center justify-between px-6 mb-6 lg:hidden">
+              <h3 className="font-fredoka font-bold text-xl text-gray-900">Filters</h3>
+              <button className="p-2 hover:bg-gray-100 rounded-full" onClick={() => setIsMobileFilterOpen(false)}>
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            {/* Categories Block */}
+            <div className="bg-white lg:rounded-xl p-6 lg:border-2 lg:border-[#fff3b0]/50 lg:shadow-sm">
+              <h3 className="hidden lg:block font-fredoka font-bold text-xl text-gray-900 mb-4">Categories</h3>
+
+              {/* Dashed line */}
+              <div className="w-full border-t border-dashed border-[#fff3b0] mb-5"></div>
+
+              <div className="flex flex-col gap-4">
+                {mockCategories.slice(0, 10).map((cat) => {
+                  const count = Math.floor(Math.random() * 30) + 5; // Placeholder
+                  return (
+                    <label key={cat.id} className="flex items-center justify-between cursor-pointer group" onClick={() => handleCategoryChange(cat.id)}>
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <span className={`text-[15px] font-semibold font-sans truncate ${selectedCategories.includes(cat.id) ? 'text-boonie-pink' : 'text-gray-700 group-hover:text-boonie-pink'}`}>
+                          {cat.name}
+                        </span>
+                      </div>
+                      <span className="bg-[#fff9e6] text-[#d4b200] font-bold text-xs px-3 py-1 rounded-full font-sans ml-2">
+                        {count}
                       </span>
-                    </div>
-                    <span className="bg-[#fff9e6] text-[#d4b200] font-bold text-xs px-3 py-1 rounded-full font-sans ml-2">
-                      {count}
-                    </span>
-                  </label>
-                );
-              })}
+                    </label>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
