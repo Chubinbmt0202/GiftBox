@@ -13,6 +13,7 @@ import { AdminDashboard } from './pages/admin/Dashboard';
 import { AdminProducts } from './pages/admin/Products';
 import { AdminCategories } from './pages/admin/Categories';
 import { AdminOrders } from './pages/admin/Orders';
+import { AdminOrderDetail } from './pages/admin/OrderDetail';
 import { AdminCustomers } from './pages/admin/Customers';
 import { AdminSettings } from './pages/admin/Settings';
 import { Login } from './pages/Login';
@@ -41,6 +42,7 @@ const App = () => {
               <Route path="products" element={<AdminProducts />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="orders" element={<AdminOrders />} />
+              <Route path="orders/:id" element={<AdminOrderDetail />} />
               <Route path="customers" element={<AdminCustomers />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>

@@ -10,7 +10,7 @@ interface Props {
     spaceUsedPercentage: number;
     currentStep: number;
     totalPrice: number;
-    handleItemRemove: (id: number) => void;
+    handleItemRemove: (id: string | number) => void;
     onChangeBox: () => void;
     onNext: () => void;
     onBack?: () => void;
@@ -87,7 +87,7 @@ export function CartPreviewSidebar({
                 {selectedItems.map(item => (
                     <div key={item.id} className="flex gap-3 items-center group relative p-2 -mx-2 rounded-xl hover:bg-gray-50 transition-colors">
                         <div className="w-12 h-12 bg-[#f4ede4] rounded-xl flex-shrink-0 relative">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply rounded-xl" />
+                            <img src={item.imageUrl || item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply rounded-xl" />
                             <div className="absolute -top-1.5 -right-1.5 bg-gray-900 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white z-10">
                                 {item.quantity}
                             </div>

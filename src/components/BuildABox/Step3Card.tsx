@@ -1,19 +1,19 @@
-// import type { Card } from "./data";
-import { MOCK_CARDS } from "./data";
+import type { Card } from "./data";
 interface Props {
-    selectedCardId: number | null;
-    setSelectedCardId: (id: number | null) => void;
+    cards: Card[];
+    selectedCardId: string | number | null;
+    setSelectedCardId: (id: string | number | null) => void;
     cardMessage: string;
     setCardMessage: (msg: string) => void;
 }
 
-export function Step3Card({ selectedCardId, setSelectedCardId, cardMessage, setCardMessage }: Props) {
+export function Step3Card({ cards, selectedCardId, setSelectedCardId, cardMessage, setCardMessage }: Props) {
     return (
         <div className="flex flex-col lg:flex-row gap-8">
             {/* Card Selection */}
             <div className="flex-1">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                    {MOCK_CARDS.map(card => (
+                    {cards.map(card => (
                         <div
                             key={card.id}
                             onClick={() => setSelectedCardId(card.id)}

@@ -1,22 +1,25 @@
 export interface Box {
-    id: number;
+    id: string | number;
     name: string;
-    desc: string;
+    desc?: string;
     price: number;
     capacity: number;
-    image: string;
+    image?: string;
+    imageUrl?: string;
 }
 
 export interface Product {
-    id: number;
+    id: string | number;
     name: string;
     category: string;
     price: number;
-    image: string;
+    image?: string;
+    imageUrl?: string;
+    status?: string;
 }
 
 export interface Card {
-    id: number;
+    id: string | number;
     name: string;
     price: number;
     image: string;

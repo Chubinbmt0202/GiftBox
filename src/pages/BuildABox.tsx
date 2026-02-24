@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-// Import new components
-import type { Box, SelectedProduct } from "../components/BuildABox/data";
-import { MOCK_PRODUCTS, MOCK_CARDS } from "../components/BuildABox/data";
+import type { Box, SelectedProduct, Product } from "../components/BuildABox/data";
+import { getProducts } from "../services/productService";
+import { getCategories, type Category } from "../services/categoryService";
 import { BuildABoxHeader } from "../components/BuildABox/BuildABoxHeader";
 import { Step1Packaging } from "../components/BuildABox/Step1Packaging";
 import { Step2Items } from "../components/BuildABox/Step2Items";
@@ -15,18 +15,75 @@ export function BuildABox() {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
 
-    // Global Cart State
     const [selectedBox, setSelectedBox] = useState<Box | null>(null);
     const [selectedItems, setSelectedItems] = useState<SelectedProduct[]>([]);
-    const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+    const [selectedCardId, setSelectedCardId] = useState<string | number | null>(null);
     const [cardMessage, setCardMessage] = useState("");
 
     // Step 2 specific state
     const [activeCategory, setActiveCategory] = useState("Tất cả");
     const [searchQuery, setSearchQuery] = useState("");
+    const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const [prods, cats] = await Promise.all([getProducts(), getCategories()]);
+                const mappedProducts = prods.map(p => ({
+                    id: p.id!,
+                    name: p.name,
+                    category: p.category, // Assuming p.category is already the category name
+                    price: Number(p.price),
+                    image: p.imageUrl,
+                    imageUrl: p.imageUrl,
+                    status: p.status
+                }));
+                // Optionally filter out 'Out of Stock' items here, or handle in UI
+                setProducts(mappedProducts);
+                const filteredCats = cats.filter(c => {
+                    const name = c.name.toLowerCase();
+                    return name !== "hộp" && name !== "thiệp";
+                });
+                setCategories(filteredCats);
+            } catch (error) {
+                console.error("Failed to load products and categories:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadData();
+    }, []);
+
+    const boxes: Box[] = products
+        .filter(p => p.category.toLowerCase() === "hộp")
+        .map(p => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            capacity: 6, // default capacity
+            image: p.imageUrl,
+            desc: "Bao bì hộp quà tiêu chuẩn"
+        }));
+
+    const cards = useMemo(() => {
+        return products
+            .filter(p => p.category.toLowerCase() === "thiệp")
+            .map(p => ({
+                id: p.id,
+                name: p.name,
+                price: p.price,
+                image: p.imageUrl || p.image || ''
+            }));
+    }, [products]);
 
     const filteredAndSortedProducts = useMemo(() => {
-        let result = MOCK_PRODUCTS;
+        let result = products.filter(p => {
+            const cat = p.category.toLowerCase();
+            return cat !== "hộp" && cat !== "thiệp";
+        }); // don't show boxes and cards in items list
 
         if (activeCategory !== "Tất cả") {
             result = result.filter(p => p.category === activeCategory);
@@ -38,14 +95,14 @@ export function BuildABox() {
         }
 
         return result;
-    }, [activeCategory, searchQuery]);
+    }, [activeCategory, searchQuery, products]);
 
     // --- Computed Cart Logic ---
     const totalItemsQuantity = selectedItems.reduce((acc, item) => acc + item.quantity, 0);
     const boxCapacity = selectedBox ? selectedBox.capacity : 0;
     const spaceUsedPercentage = boxCapacity > 0 ? Math.min((totalItemsQuantity / boxCapacity) * 100, 100) : 0;
 
-    const selectedCard = MOCK_CARDS.find(c => c.id === selectedCardId);
+    const selectedCard = cards.find(c => c.id === selectedCardId);
     const totalPrice = (selectedBox?.price || 0)
         + selectedItems.reduce((acc, item) => acc + (item.price * item.quantity), 0)
         + (selectedCard?.price || 0);
@@ -80,7 +137,7 @@ export function BuildABox() {
         });
     };
 
-    const handleItemRemove = (productId: number) => {
+    const handleItemRemove = (productId: string | number) => {
         setSelectedItems(prev => {
             const existing = prev.find(item => item.id === productId);
             if (existing && existing.quantity > 1) {
@@ -121,9 +178,18 @@ export function BuildABox() {
                         }}
                         onBack={() => setCurrentStep(2)}
                         onComplete={() => {
-                            navigate("/checkout", {
-                                state: { selectedBox, selectedItems, selectedCard, totalPrice }
-                            });
+                            const handleComplete = () => {
+                                navigate("/checkout", {
+                                    state: {
+                                        selectedBox,
+                                        selectedItems,
+                                        selectedCard,
+                                        cardMessage,
+                                        totalPrice
+                                    }
+                                });
+                            };
+                            handleComplete();
                         }}
                     />
                 </div>
@@ -138,8 +204,10 @@ export function BuildABox() {
                 >
                     {currentStep === 1 && (
                         <Step1Packaging
+                            boxes={boxes}
                             selectedBox={selectedBox}
                             handleBoxSelect={handleBoxSelect}
+                            isLoading={isLoading}
                         />
                     )}
 
@@ -155,11 +223,14 @@ export function BuildABox() {
                             selectedItems={selectedItems}
                             totalItemsQuantity={totalItemsQuantity}
                             boxCapacity={boxCapacity}
+                            categories={categories}
+                            isLoading={isLoading}
                         />
                     )}
 
                     {currentStep === 3 && (
                         <Step3Card
+                            cards={cards}
                             selectedCardId={selectedCardId}
                             setSelectedCardId={setSelectedCardId}
                             cardMessage={cardMessage}

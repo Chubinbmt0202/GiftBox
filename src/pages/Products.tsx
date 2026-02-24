@@ -1,21 +1,44 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, Star, Heart, Maximize, ShoppingBag, Filter, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { mockCategories, mockProducts } from '../data/mockData';
+import { getProducts, type Product } from '../services/productService';
+import { getCategories, type Category } from '../services/categoryService';
 
 export function Products() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleCategoryChange = (catId: string) => {
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const [productsData, categoriesData] = await Promise.all([
+          getProducts(),
+          getCategories()
+        ]);
+        setProducts(productsData);
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Failed to load products and categories:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  const handleCategoryChange = (catName: string) => {
     setSelectedCategories(prev =>
-      prev.includes(catId) ? prev.filter(c => c !== catId) : [...prev, catId]
+      prev.includes(catName) ? prev.filter(c => c !== catName) : [...prev, catName]
     );
   };
 
   const currentProducts = selectedCategories.length > 0
-    ? mockProducts.filter(p => selectedCategories.includes(p.categoryId))
-    : mockProducts;
+    ? products.filter(p => selectedCategories.includes(p.category))
+    : products;
 
   return (
     <div className="min-h-screen bg-[#fffdf5] font-sans p-4 md:p-8 flex justify-center text-boonie-text">
@@ -60,17 +83,16 @@ export function Products() {
               <div className="w-full border-t border-dashed border-[#fff3b0] mb-5"></div>
 
               <div className="flex flex-col gap-4">
-                {mockCategories.slice(0, 10).map((cat) => {
-                  const count = Math.floor(Math.random() * 30) + 5; // Placeholder
+                {categories.map((cat) => {
                   return (
-                    <label key={cat.id} className="flex items-center justify-between cursor-pointer group" onClick={() => handleCategoryChange(cat.id)}>
+                    <label key={cat.id} className="flex items-center justify-between cursor-pointer group" onClick={() => handleCategoryChange(cat.name)}>
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <span className={`text-[15px] font-semibold font-sans truncate ${selectedCategories.includes(cat.id) ? 'text-boonie-pink' : 'text-gray-700 group-hover:text-boonie-pink'}`}>
+                        <span className={`text-[15px] font-semibold font-sans truncate ${selectedCategories.includes(cat.name) ? 'text-boonie-pink' : 'text-gray-700 group-hover:text-boonie-pink'}`}>
                           {cat.name}
                         </span>
                       </div>
                       <span className="bg-[#fff9e6] text-[#d4b200] font-bold text-xs px-3 py-1 rounded-full font-sans ml-2">
-                        {count}
+                        {cat.count}
                       </span>
                     </label>
                   );
@@ -102,74 +124,77 @@ export function Products() {
             </div>
           </div>
 
-          {/* Product Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-x-6 md:gap-y-10">
-            {currentProducts.map((product) => {
-              const category = mockCategories.find(c => c.id === product.categoryId)?.name || 'Sản phẩm';
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20 w-full">
+              <div className="w-8 h-8 border-4 border-[#fff3b0] border-t-boonie-pink rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-x-6 md:gap-y-10">
+              {currentProducts.map((product) => {
+                return (
+                  <Link to={`/product/${product.id}`} key={product.id} className="group flex flex-col h-full cursor-pointer">
+                    {/* Image Container */}
+                    <div className="relative aspect-square md:aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-white w-full border border-gray-100 shadow-sm transition-all duration-300 group-hover:shadow-md mb-3">
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
 
-              return (
-                <Link to={`/product/${product.id}`} key={product.id} className="group flex flex-col h-full cursor-pointer">
-                  {/* Image Container */}
-                  <div className="relative aspect-square md:aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-white w-full border border-gray-100 shadow-sm transition-all duration-300 group-hover:shadow-md mb-3">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-
-                    {/* Badge */}
-                    {product.badge && (
-                      <div className="absolute top-3 left-3 px-2.5 py-1 bg-[#1a3b2b] rounded-full text-[11px] font-bold text-white shadow-sm font-sans z-10">
-                        {product.badge}
-                      </div>
-                    )}
-
-                    {/* Hover Action Buttons */}
-                    <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
-                      <button className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors">
-                        <Heart className="w-4 h-4" />
-                      </button>
-                      <div className="flex flex-col gap-2 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
-                        <button className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors mt-0">
-                          <Maximize className="w-4 h-4" />
-                        </button>
-                        <button className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors">
-                          <ShoppingBag className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Info Container */}
-                  <div className="flex flex-col flex-1 px-1">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-[13px] text-gray-400 font-medium font-sans truncate pr-2">{category}</span>
-                      <div className="flex items-center gap-1 text-[13px] font-bold text-gray-800 shrink-0 font-sans">
-                        <Star className="w-3.5 h-3.5 fill-[#ffc107] text-[#ffc107]" />
-                        {product.rating?.toFixed(1) || "5.0"}
-                      </div>
-                    </div>
-
-                    <h4 className="font-bold text-gray-800 text-[15px] mb-1.5 font-sans truncate group-hover:text-[#c49a6c] transition-colors">
-                      {product.name}
-                    </h4>
-
-                    <div className="flex items-center gap-2 mt-auto">
-                      <span className="font-bold text-[15px] font-sans text-[#c49a6c]">
-                        {product.price.toLocaleString('vi-VN')} đ
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-[13px] text-gray-400 line-through font-medium font-sans">
-                          {product.originalPrice.toLocaleString('vi-VN')} đ
-                        </span>
+                      {/* Badge */}
+                      {product.status === 'Low Stock' && (
+                        <div className="absolute top-3 left-3 px-2.5 py-1 bg-amber-500 rounded-full text-[11px] font-bold text-white shadow-sm font-sans z-10">
+                          Sắp hết
+                        </div>
                       )}
+                      {product.status === 'Out of Stock' && (
+                        <div className="absolute top-3 left-3 px-2.5 py-1 bg-gray-500 rounded-full text-[11px] font-bold text-white shadow-sm font-sans z-10">
+                          Hết hàng
+                        </div>
+                      )}
+
+                      {/* Hover Action Buttons */}
+                      <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
+                        <button className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors">
+                          <Heart className="w-4 h-4" />
+                        </button>
+                        <div className="flex flex-col gap-2 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+                          <button className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors mt-0">
+                            <Maximize className="w-4 h-4" />
+                          </button>
+                          <button className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors">
+                            <ShoppingBag className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-          {currentProducts.length === 0 && (
+
+                    {/* Info Container */}
+                    <div className="flex flex-col flex-1 px-1">
+                      <div className="flex justify-between items-center mb-1.5">
+                        <span className="text-[13px] text-gray-400 font-medium font-sans truncate pr-2">{product.category}</span>
+                        <div className="flex items-center gap-1 text-[13px] font-bold text-gray-800 shrink-0 font-sans">
+                          <Star className="w-3.5 h-3.5 fill-[#ffc107] text-[#ffc107]" />
+                          5.0
+                        </div>
+                      </div>
+
+                      <h4 className="font-bold text-gray-800 text-[15px] mb-1.5 font-sans truncate group-hover:text-[#c49a6c] transition-colors">
+                        {product.name}
+                      </h4>
+
+                      <div className="flex items-center gap-2 mt-auto">
+                        <span className="font-bold text-[15px] font-sans text-[#c49a6c]">
+                          {Number(product.price).toLocaleString('vi-VN')} đ
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+          {!isLoading && currentProducts.length === 0 && (
             <div className="text-center py-20 text-gray-500 font-sans">
               Không tìm thấy sản phẩm nào phù hợp.
             </div>

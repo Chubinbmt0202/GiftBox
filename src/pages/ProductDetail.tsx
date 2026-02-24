@@ -1,19 +1,52 @@
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, ShoppingBag, Truck, Shield, Clock } from 'lucide-react';
-import { mockProducts, mockSets } from '../data/mockData';
+import { mockSets } from '../data/mockData';
 import { Button } from '../components/ui/button';
-import type { Product, GiftSet } from '../types';
+import type { Product } from '../services/productService';
+import type { GiftSet } from '../types';
+import { getProductById } from '../services/productService';
 
 export function ProductDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
-    // Check if it's a product or a set
-    const productItem = mockProducts.find(p => p.id === id) as Product | undefined;
+    const [productItem, setProductItem] = useState<Product | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            if (!id) return;
+            setIsLoading(true);
+            try {
+                const data = await getProductById(id);
+                setProductItem(data);
+            } catch (error) {
+                console.error("Failed to fetch product details:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        // If it's a known static set, we might not need to fetch, but let's try fetch first
+        // or we can just fetch anyway.
+        fetchProduct();
+    }, [id]);
+
+    // Check if it's a static set (fallback)
     const setItem = mockSets.find(s => s.id === id) as GiftSet | undefined;
 
     const item = productItem || setItem;
-    const isSet = !!setItem;
+    const isSet = !!setItem && !productItem;
+
+    if (isLoading) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center bg-warm-gray px-4">
+                <div className="w-8 h-8 border-4 border-[#fff3b0] border-t-boonie-pink rounded-full animate-spin mb-4"></div>
+                <p className="text-primary-600 font-medium">Đang tải thông tin sản phẩm...</p>
+            </div>
+        );
+    }
 
     if (!item) {
         return (
@@ -52,13 +85,23 @@ export function ProductDetail() {
                         <div className="space-y-6">
                             <div className="aspect-[4/5] sm:aspect-square bg-primary-50 rounded-[2rem] overflow-hidden relative border border-primary-100/50">
                                 <img
-                                    src={item.image}
+                                    src={productItem ? productItem.imageUrl : (setItem ? setItem.image : '')}
                                     alt={item.name}
                                     className="w-full h-full object-cover"
                                 />
-                                {item.badge && (
+                                {productItem && productItem.status === 'Low Stock' && (
+                                    <div className="absolute top-6 left-6 bg-amber-500 text-white text-sm font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
+                                        Sắp hết
+                                    </div>
+                                )}
+                                {productItem && productItem.status === 'Out of Stock' && (
+                                    <div className="absolute top-6 left-6 bg-gray-500 text-white text-sm font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
+                                        Hết hàng
+                                    </div>
+                                )}
+                                {setItem && setItem.badge && (
                                     <div className="absolute top-6 left-6 bg-primary-900 text-white text-sm font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">
-                                        {item.badge}
+                                        {setItem.badge}
                                     </div>
                                 )}
                             </div>
@@ -75,31 +118,31 @@ export function ProductDetail() {
                                 {item.name}
                             </h1>
 
-                            {item.rating && (
+                            {(item as GiftSet).rating && (
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="flex items-center gap-1 bg-primary-50 px-3 py-1.5 rounded-full">
                                         <Star className="w-4 h-4 fill-primary-600 text-primary-600" />
-                                        <span className="font-bold text-primary-900">{item.rating}</span>
+                                        <span className="font-bold text-primary-900">{(item as GiftSet).rating}</span>
                                     </div>
                                     <span className="text-primary-400 text-sm font-medium">
-                                        {item.reviewsCount ? `${item.reviewsCount} đánh giá` : 'Chưa có đánh giá'}
+                                        {(item as GiftSet).reviewsCount ? `${(item as GiftSet).reviewsCount} đánh giá` : 'Chưa có đánh giá'}
                                     </span>
                                 </div>
                             )}
 
                             <div className="flex items-end gap-4 mb-8">
                                 <span className="text-4xl sm:text-5xl font-bold text-primary-900 tracking-tight">
-                                    ${item.price}
+                                    {Number(item.price).toLocaleString('vi-VN')} đ
                                 </span>
-                                {item.originalPrice && (
+                                {setItem && setItem.originalPrice && (
                                     <span className="text-xl text-primary-400 line-through decoration-primary-300 mb-1">
-                                        ${item.originalPrice}
+                                        {setItem.originalPrice.toLocaleString('vi-VN')} đ
                                     </span>
                                 )}
                             </div>
 
                             <div className="prose prose-primary text-primary-600 mb-8 whitespace-pre-line leading-relaxed">
-                                {item.description || "Đây là một sản phẩm tuyển chọn từ Miloostudios, đáp ứng đầy đủ tiêu chí thẩm mỹ và chất lượng."}
+                                {isSet ? setItem.description : "Đây là một sản phẩm được tỉ mỉ lựa chọn từ Miloo Studios. Thiết kế riêng biệt và chất lượng cao su cấp."}
                             </div>
 
                             {/* Specifically for Sets - list items */}
@@ -142,10 +185,11 @@ export function ProductDetail() {
                             <div className="flex gap-4 mt-auto">
                                 <Button
                                     size="lg"
-                                    className="flex-1 h-14 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
+                                    disabled={productItem ? productItem.status === 'Out of Stock' : false}
+                                    className={`flex-1 h-14 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 ${productItem?.status === 'Out of Stock' ? 'bg-gray-400 cursor-not-allowed text-white hover:transform-none' : ''}`}
                                     onClick={() => alert('Đã thêm vào giỏ hàng!')}
                                 >
-                                    <ShoppingBag className="w-5 h-5 mr-2" /> Thêm vào giỏ hàng
+                                    <ShoppingBag className="w-5 h-5 mr-2" /> {productItem?.status === 'Out of Stock' ? 'Tạm hết hàng' : 'Thêm vào giỏ hàng'}
                                 </Button>
                             </div>
                         </div>

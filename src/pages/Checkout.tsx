@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { ArrowLeft, Sparkles, AlertCircle, CheckCircle, Shield } from "lucide-react";
+import { ArrowLeft, Sparkles, AlertCircle, CheckCircle, Shield, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { createOrder, type OrderData } from "../services/orderService";
 
 interface CheckoutState {
     selectedBox?: any;
     selectedItems?: any[];
     selectedCard?: any;
+    cardMessage?: string;
     totalPrice?: number;
 }
 
@@ -15,11 +17,22 @@ export function Checkout() {
     const state = location.state as CheckoutState | null;
     const [currentStep, setCurrentStep] = useState(1);
 
+    // Delivery Form State
+    const [customerInfo, setCustomerInfo] = useState({
+        fullName: "",
+        phone: "",
+        email: "",
+        address: "",
+        notes: ""
+    });
+
     const steps = [
         { id: 1, title: "Xem lại đơn hàng" },
         { id: 2, title: "Thông tin giao hàng" },
         { id: 3, title: "Thanh toán" },
     ];
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     if (!state || !state.selectedBox) {
         return (
@@ -36,7 +49,50 @@ export function Checkout() {
         );
     }
 
-    const { selectedBox, selectedItems = [], selectedCard, totalPrice = 0 } = state;
+    const { selectedBox, selectedItems = [], selectedCard, cardMessage = "", totalPrice = 0 } = state;
+
+    const handleOrderSubmit = async () => {
+        if (!customerInfo.fullName || !customerInfo.phone || !customerInfo.address) {
+            alert("Vui lòng điền đầy đủ các trường thông tin giao hàng có dấu (*)");
+            setCurrentStep(2);
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const orderItems = selectedItems.map((item: any) => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image || item.imageUrl
+            }));
+
+            const orderData: Omit<OrderData, 'createdAt' | 'status'> = {
+                customerInfo,
+                paymentMethod: 'COD', // For now, defaulting to COD as other ones are visually disabled
+                items: orderItems,
+                cardMessage: cardMessage,
+                boxId: selectedBox.id,
+                boxName: selectedBox.name,
+                boxPrice: selectedBox.price,
+                cardId: selectedCard?.id || '',
+                cardName: selectedCard?.name || '',
+                cardPrice: selectedCard?.price || 0,
+                totalAmount: totalPrice,
+            };
+
+            await createOrder(orderData);
+            alert("Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.");
+            // Ideally redirect back to home or a success page:
+            // window.location.href = '/';
+        } catch (error) {
+            console.error("Order submit failed:", error);
+            alert("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sáu.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <div className="bg-warm-gray min-h-screen w-full py-12">
@@ -108,8 +164,8 @@ export function Checkout() {
                                         </div>
                                     </div>
 
-                                    {selectedCard && (
-                                        <div className="flex items-center gap-4 p-4 border border-primary-100 rounded-xl bg-primary-50">
+                                    <div className="flex flex-col gap-4 border border-primary-100 rounded-xl bg-primary-50 p-4">
+                                        <div className="flex items-center gap-4">
                                             <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-white">
                                                 <img src={selectedCard.image} alt={selectedCard.name} className="w-full h-full object-cover" />
                                             </div>
@@ -119,7 +175,13 @@ export function Checkout() {
                                                 <p className="font-medium text-primary-600">${selectedCard.price}</p>
                                             </div>
                                         </div>
-                                    )}
+                                        {cardMessage && (
+                                            <div className="bg-white p-3 rounded-lg border border-primary-100/50 mt-1 relative">
+                                                <p className="text-xs text-primary-400 font-medium mb-1">Lời nhắn viết tay:</p>
+                                                <p className="text-sm font-sans text-gray-700 italic w-full break-words">"{cardMessage}"</p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="mt-8 flex justify-end">
                                     <Button onClick={() => setCurrentStep(2)} className="px-8 shadow-md">
@@ -136,25 +198,25 @@ export function Checkout() {
                                 <form className="space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-1.5">
-                                            <label className="text-sm font-medium text-primary-900">Họ và tên người nhận</label>
-                                            <input type="text" className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Nhập họ và tên..." />
+                                            <label className="text-sm font-medium text-primary-900">Họ và tên người nhận *</label>
+                                            <input type="text" value={customerInfo.fullName} onChange={e => setCustomerInfo({ ...customerInfo, fullName: e.target.value })} className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Nhập họ và tên..." />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-sm font-medium text-primary-900">Số điện thoại</label>
-                                            <input type="tel" className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Nhập số điện thoại..." />
+                                            <label className="text-sm font-medium text-primary-900">Số điện thoại *</label>
+                                            <input type="tel" value={customerInfo.phone} onChange={e => setCustomerInfo({ ...customerInfo, phone: e.target.value })} className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Nhập số điện thoại..." />
                                         </div>
                                     </div>
                                     <div className="space-y-1.5">
                                         <label className="text-sm font-medium text-primary-900">Email người nhận (Để nhận mã vận đơn)</label>
-                                        <input type="email" className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Nhập địa chỉ email..." />
+                                        <input type="email" value={customerInfo.email} onChange={e => setCustomerInfo({ ...customerInfo, email: e.target.value })} className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Nhập địa chỉ email..." />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-sm font-medium text-primary-900">Địa chỉ cụ thể</label>
-                                        <input type="text" className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..." />
+                                        <label className="text-sm font-medium text-primary-900">Địa chỉ cụ thể *</label>
+                                        <input type="text" value={customerInfo.address} onChange={e => setCustomerInfo({ ...customerInfo, address: e.target.value })} className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..." />
                                     </div>
                                     <div className="space-y-1.5">
                                         <label className="text-sm font-medium text-primary-900">Ghi chú giao hàng</label>
-                                        <textarea className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl min-h-[100px] resize-none focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."></textarea>
+                                        <textarea value={customerInfo.notes} onChange={e => setCustomerInfo({ ...customerInfo, notes: e.target.value })} className="w-full px-4 py-3 bg-primary-50/50 border border-primary-100 rounded-xl min-h-[100px] resize-none focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."></textarea>
                                     </div>
                                 </form>
                                 <div className="mt-8 flex justify-between">
@@ -196,11 +258,17 @@ export function Checkout() {
                                     </label>
                                 </div>
                                 <div className="mt-8 flex justify-between">
-                                    <Button variant="outline" onClick={() => setCurrentStep(2)}>
+                                    <Button variant="outline" onClick={() => setCurrentStep(2)} disabled={isSubmitting}>
                                         Quay lại
                                     </Button>
-                                    <Button onClick={() => alert("Chức năng đặt hàng đang được hoàn thiện!")} className="px-8 shadow-md">
-                                        Xác nhận đặt hàng (${totalPrice.toFixed(2)})
+                                    <Button onClick={handleOrderSubmit} className="px-8 shadow-md" disabled={isSubmitting}>
+                                        {isSubmitting ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Đang xử lý...
+                                            </>
+                                        ) : (
+                                            `Xác nhận đặt hàng ($${totalPrice.toFixed(2)})`
+                                        )}
                                     </Button>
                                 </div>
                             </div>

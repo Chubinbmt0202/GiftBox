@@ -1,15 +1,24 @@
 import type { Box } from "./data";
-import { MOCK_BOXES } from "./data"
 
 interface Props {
+    boxes: Box[];
     selectedBox: Box | null;
     handleBoxSelect: (box: Box) => void;
+    isLoading?: boolean;
 }
 
-export function Step1Packaging({ selectedBox, handleBoxSelect }: Props) {
+export function Step1Packaging({ boxes, selectedBox, handleBoxSelect, isLoading }: Props) {
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center py-20 w-full min-h-[300px]">
+                <div className="w-10 h-10 border-4 border-[#fff3b0] border-t-boonie-pink rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
-            {MOCK_BOXES.map(box => (
+            {boxes.map(box => (
                 <div
                     key={box.id}
                     onClick={() => handleBoxSelect(box)}
@@ -42,6 +51,11 @@ export function Step1Packaging({ selectedBox, handleBoxSelect }: Props) {
                     </div>
                 </div>
             ))}
+            {boxes.length === 0 && (
+                <div className="col-span-full py-20 text-center text-gray-400">
+                    <p className="font-fredoka">Không có hộp quà nào.</p>
+                </div>
+            )}
         </div>
     );
 }

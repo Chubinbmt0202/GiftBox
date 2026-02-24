@@ -54,6 +54,26 @@ export const getProducts = async (): Promise<Product[]> => {
     }
 };
 
+export const getProductById = async (id: string): Promise<Product | null> => {
+    try {
+        const productRef = doc(db, PRODUCT_COLLECTION, id);
+        const docSnap = await getDoc(productRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data() as Product;
+            return {
+                ...data,
+                id: docSnap.id,
+                status: calculateProductStatus(data.stock)
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error("Error getting product by ID: ", error);
+        throw error;
+    }
+};
+
 export const addProduct = async (product: Omit<Product, 'id' | 'createdAt' | 'status'>): Promise<string> => {
     try {
         const docRef = await addDoc(collection(db, PRODUCT_COLLECTION), {
