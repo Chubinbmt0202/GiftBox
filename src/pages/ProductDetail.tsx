@@ -104,7 +104,7 @@ export function ProductDetail() {
 
                             {/* Specifically for Sets - list items */}
                             {isSet && setItem?.items && (
-                                <div className="mb-8 p-6 bg-primary-50/50 rounded-2xl border border-primary-100">
+                                <div className="mb-8 p-6 bg-primary-50/50 rounded-xl border border-primary-100">
                                     <h3 className="font-serif font-bold text-lg text-primary-900 mb-4">Hộp quà này bao gồm:</h3>
                                     <ul className="space-y-3">
                                         {setItem.items.map((subItem, idx) => (

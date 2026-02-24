@@ -131,7 +131,7 @@ export function ReadyToShip() {
                         </div>
                     )}
                 </div>
-                <Button variant="outline" className="w-full rounded-2xl border-primary-200 text-primary-700 hover:text-white hover:bg-primary-900 hover:border-primary-900 transition-colors font-semibold">
+                <Button variant="outline" className="w-full rounded-xl border-primary-200 text-primary-700 hover:text-white hover:bg-primary-900 hover:border-primary-900 transition-colors font-semibold">
                     Thêm vào giỏ
                 </Button>
             </div>
@@ -244,10 +244,10 @@ export function ReadyToShip() {
                             <input
                                 type="text"
                                 placeholder="Tìm món đồ..."
-                                className="w-full pl-11 pr-4 py-3 bg-white border border-primary-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all shadow-sm"
+                                className="w-full pl-11 pr-4 py-3 bg-white border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent transition-all shadow-sm"
                             />
                         </div>
-                        <Button variant="outline" className="rounded-2xl h-12 px-4 border-primary-200 text-primary-700 bg-white hover:bg-primary-50 shrink-0">
+                        <Button variant="outline" className="rounded-xl h-12 px-4 border-primary-200 text-primary-700 bg-white hover:bg-primary-50 shrink-0">
                             <Filter className="w-5 h-5" />
                         </Button>
                     </div>

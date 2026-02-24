@@ -53,7 +53,7 @@ export function Step2Items({
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search items..."
+                        placeholder="Tìm kiếm sản phẩm..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-11 pr-4 py-2.5 bg-white rounded-full text-sm text-gray-900 focus:outline-none shadow-sm font-sans placeholder:text-gray-400"
@@ -77,18 +77,18 @@ export function Step2Items({
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
                                 key={product.id}
-                                className={`bg-white p-3 lg:p-4 rounded-[2rem] border-2 transition-all group relative flex flex-col shadow-sm ${quantity > 0 ? 'border-boonie-pink' : 'border-transparent hover:border-gray-200 hover:-translate-y-1'
+                                className={`bg-white p-3 lg:p-4 rounded-xl border-2 transition-all group relative flex flex-col shadow-sm ${quantity > 0 ? 'border-boonie-pink' : 'border-transparent hover:border-gray-200 hover:-translate-y-1'
                                     }`}
                             >
                                 <button className="absolute top-5 right-5 w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-300 hover:text-boonie-pink z-10 transition-colors">
                                     <Heart className="w-3.5 h-3.5 fill-current" />
                                 </button>
 
-                                <div className="aspect-[4/3] bg-[#f4ede4] rounded-[1.5rem] mb-3 lg:mb-4 overflow-hidden relative flex items-center justify-center">
+                                <div className="aspect-[4/3] bg-[#f4ede4] rounded-xl mb-3 lg:mb-4 overflow-hidden relative flex items-center justify-center">
                                     <img src={product.image} alt={product.name} className="w-full h-full object-cover mix-blend-multiply" />
                                     {quantity > 0 && (
                                         <div className="absolute inset-0 bg-white/20 flex flex-col items-center justify-center">
-                                            <span className="bg-boonie-pink text-white px-3 py-1 rounded-full font-bold text-xs shadow-md">Added</span>
+                                            <span className="bg-boonie-pink text-white px-3 py-1 rounded-full font-bold text-xs shadow-md">Đã thêm</span>
                                         </div>
                                     )}
                                 </div>
@@ -97,7 +97,7 @@ export function Step2Items({
                                     <div className="mb-3">
                                         <div className="flex flex-col mb-1 gap-1">
                                             <h3 className="font-bold text-gray-900 text-sm lg:text-base leading-tight font-fredoka line-clamp-2">{product.name}</h3>
-                                            <span className="text-boonie-pink font-semibold text-sm lg:text-base">{product.price.toLocaleString()}₫</span>
+                                            <span className="text-boonie-pink font-semibold text-sm lg:text-base">{product.price.toLocaleString('vi-VN')} đ</span>
                                         </div>
                                     </div>
 
@@ -122,11 +122,11 @@ export function Step2Items({
                                             <button
                                                 onClick={(e) => handleItemAdd(product, e)}
                                                 className={`w-full font-bold font-sans text-xs rounded-xl py-2 flex items-center justify-center gap-1.5 transition-colors ${isFull
-                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                        : 'bg-[#f4ede4] text-gray-900 hover:bg-[#e8dfd3]'
+                                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                    : 'bg-[#f4ede4] text-gray-900 hover:bg-[#e8dfd3]'
                                                     }`}
                                             >
-                                                <Plus className="w-3.5 h-3.5" /> Add to Box
+                                                <Plus className="w-3.5 h-3.5" /> Thêm vào hộp
                                             </button>
                                         )}
                                     </div>
@@ -139,7 +139,7 @@ export function Step2Items({
                 {filteredAndSortedProducts.length === 0 && (
                     <div className="col-span-full py-20 text-center text-gray-400">
                         <Package className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                        <p className="font-fredoka">No items found matching your criteria.</p>
+                        <p className="font-fredoka">Không tìm thấy sản phẩm.</p>
                     </div>
                 )}
             </div>
@@ -147,7 +147,7 @@ export function Step2Items({
             {filteredAndSortedProducts.length > 0 && (
                 <div className="mt-12 flex justify-center">
                     <button className="px-8 py-3 rounded-full border border-[#e8dfd3] bg-transparent text-gray-900 font-bold font-sans hover:bg-white transition-colors">
-                        Load More Items
+                        Xem thêm sản phẩm
                     </button>
                 </div>
             )}

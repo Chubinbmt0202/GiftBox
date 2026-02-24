@@ -3,7 +3,7 @@ import React from "react";
 const LandingPage = () => {
   return (
     <div className="bg-[#EFE7DD] min-h-screen font-serif text-[#3A2E2A]">
-      
+
       {/* Navbar */}
       <nav className="flex justify-between items-center px-16 py-6">
         <div className="text-2xl font-semibold tracking-wide">
@@ -67,7 +67,7 @@ const LandingPage = () => {
               <img
                 src="https://images.unsplash.com/photo-1607082349566-187342175e2f"
                 alt="Gift Box"
-                className="rounded-2xl object-cover"
+                className="rounded-xl object-cover"
               />
             </div>
 

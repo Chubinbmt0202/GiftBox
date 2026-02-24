@@ -94,7 +94,7 @@ export function BuildABox() {
         <div className="min-h-screen bg-boonie-bg p-4 md:p-8 flex justify-center font-sans text-boonie-text">
             <div className="w-full max-w-[1600px] flex flex-col lg:flex-row gap-8 items-start">
                 {/* Left Sidebar (Sticky) */}
-                <div className="w-full lg:w-[360px] flex flex-col gap-6 shrink-0 z-10 sticky top-8">
+                <div className="w-full lg:w-[360px] flex flex-col gap-2 shrink-0 z-10 sticky top-8">
                     <BuildABoxHeader
                         currentStep={currentStep}
                         setCurrentStep={setCurrentStep}
@@ -127,61 +127,45 @@ export function BuildABox() {
                     />
                 </div>
 
-                {/* Main Content Area */}
-                <div className="flex-1 flex flex-col min-w-0">
-                    <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 gap-4">
-                        <div>
-                            <h1 className="text-4xl lg:text-5xl font-bold font-fredoka text-black mb-2">
-                                {currentStep === 1 && "Choose Box"}
-                                {currentStep === 2 && "Fill Your Box"}
-                                {currentStep === 3 && "Add a Note"}
-                            </h1>
-                            <p className="text-boonie-text/80 text-lg">
-                                {currentStep === 1 && "Select the perfect packaging for your gifts."}
-                                {currentStep === 2 && "Pick the perfect goodies to go inside."}
-                                {currentStep === 3 && "Write a heartfelt message to complete the experience."}
-                            </p>
-                        </div>
-                    </div>
 
-                    <motion.div
-                        key={currentStep}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        {currentStep === 1 && (
-                            <Step1Packaging
-                                selectedBox={selectedBox}
-                                handleBoxSelect={handleBoxSelect}
-                            />
-                        )}
 
-                        {currentStep === 2 && (
-                            <Step2Items
-                                activeCategory={activeCategory}
-                                setActiveCategory={setActiveCategory}
-                                searchQuery={searchQuery}
-                                setSearchQuery={setSearchQuery}
-                                filteredAndSortedProducts={filteredAndSortedProducts}
-                                handleItemAdd={handleItemAdd}
-                                handleItemRemove={handleItemRemove}
-                                selectedItems={selectedItems}
-                                totalItemsQuantity={totalItemsQuantity}
-                                boxCapacity={boxCapacity}
-                            />
-                        )}
+                <motion.div
+                    key={currentStep}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {currentStep === 1 && (
+                        <Step1Packaging
+                            selectedBox={selectedBox}
+                            handleBoxSelect={handleBoxSelect}
+                        />
+                    )}
 
-                        {currentStep === 3 && (
-                            <Step3Card
-                                selectedCardId={selectedCardId}
-                                setSelectedCardId={setSelectedCardId}
-                                cardMessage={cardMessage}
-                                setCardMessage={setCardMessage}
-                            />
-                        )}
-                    </motion.div>
-                </div>
+                    {currentStep === 2 && (
+                        <Step2Items
+                            activeCategory={activeCategory}
+                            setActiveCategory={setActiveCategory}
+                            searchQuery={searchQuery}
+                            setSearchQuery={setSearchQuery}
+                            filteredAndSortedProducts={filteredAndSortedProducts}
+                            handleItemAdd={handleItemAdd}
+                            handleItemRemove={handleItemRemove}
+                            selectedItems={selectedItems}
+                            totalItemsQuantity={totalItemsQuantity}
+                            boxCapacity={boxCapacity}
+                        />
+                    )}
+
+                    {currentStep === 3 && (
+                        <Step3Card
+                            selectedCardId={selectedCardId}
+                            setSelectedCardId={setSelectedCardId}
+                            cardMessage={cardMessage}
+                            setCardMessage={setCardMessage}
+                        />
+                    )}
+                </motion.div>
             </div>
         </div>
     );

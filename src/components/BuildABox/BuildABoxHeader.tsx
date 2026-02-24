@@ -2,9 +2,9 @@ import { Check } from "lucide-react";
 import type { Box } from "./data";
 
 export const steps = [
-    { id: 1, title: "1. Choose Box" },
-    { id: 2, title: "2. Add Items" },
-    { id: 3, title: "3. Add Note" },
+    { id: 1, title: "1. Chọn Hộp Quà" },
+    { id: 2, title: "2. Chọn Quà" },
+    { id: 3, title: "3. Lời Nhắn" },
 ];
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 
 export function BuildABoxHeader({ currentStep, setCurrentStep, selectedBox }: Props) {
     return (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100/50">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100/50">
             <div className="flex items-center justify-between relative px-2">
                 {/* Horizontal connecting line */}
                 <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[2px] bg-gray-100 z-0"></div>

@@ -50,7 +50,7 @@ export function Checkout() {
                     {/* Left Column: Checkout Form */}
                     <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
                         {/* Stepper Header */}
-                        <div className="flex items-center justify-between mb-4 bg-white p-4 rounded-2xl border border-primary-100 shadow-sm">
+                        <div className="flex items-center justify-between mb-4 bg-white p-4 rounded-xl border border-primary-100 shadow-sm">
                             {steps.map((step, index) => {
                                 const isActive = currentStep === step.id;
                                 const isPast = currentStep > step.id;
@@ -75,7 +75,7 @@ export function Checkout() {
                             <div className="bg-white p-6 md:p-8 rounded-3xl border border-primary-100 shadow-sm">
                                 <h2 className="text-2xl font-serif font-bold text-primary-900 mb-6">Chi tiết hộp quà của bạn</h2>
                                 <div className="space-y-6">
-                                    <div className="flex items-center gap-4 p-4 border border-primary-100 rounded-2xl bg-primary-50">
+                                    <div className="flex items-center gap-4 p-4 border border-primary-100 rounded-xl bg-primary-50">
                                         <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-white">
                                             <img src={selectedBox.image} alt={selectedBox.name} className="w-full h-full object-cover" />
                                         </div>
@@ -109,7 +109,7 @@ export function Checkout() {
                                     </div>
 
                                     {selectedCard && (
-                                        <div className="flex items-center gap-4 p-4 border border-primary-100 rounded-2xl bg-primary-50">
+                                        <div className="flex items-center gap-4 p-4 border border-primary-100 rounded-xl bg-primary-50">
                                             <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-white">
                                                 <img src={selectedCard.image} alt={selectedCard.name} className="w-full h-full object-cover" />
                                             </div>
@@ -173,21 +173,21 @@ export function Checkout() {
                             <div className="bg-white p-6 md:p-8 rounded-3xl border border-primary-100 shadow-sm">
                                 <h2 className="text-2xl font-serif font-bold text-primary-900 mb-6">Phương thức thanh toán</h2>
                                 <div className="space-y-4">
-                                    <label className="flex items-start gap-4 p-5 border-2 border-primary-900 bg-primary-50/50 rounded-2xl cursor-pointer">
+                                    <label className="flex items-start gap-4 p-5 border-2 border-primary-900 bg-primary-50/50 rounded-xl cursor-pointer">
                                         <input type="radio" name="payment" className="w-5 h-5 text-primary-900 mt-0.5" defaultChecked />
                                         <div>
                                             <span className="font-bold text-primary-900 block mb-1">Thanh toán khi nhận hàng (COD)</span>
                                             <p className="text-sm text-primary-600">Thanh toán bằng tiền mặt khi bưu tá giao hàng tới địa chỉ của bạn.</p>
                                         </div>
                                     </label>
-                                    <label className="flex items-start gap-4 p-5 border-2 border-transparent hover:border-primary-200 bg-white shadow-[0_0_15px_-5px_rgba(0,0,0,0.05)] rounded-2xl cursor-pointer transition-all">
+                                    <label className="flex items-start gap-4 p-5 border-2 border-transparent hover:border-primary-200 bg-white shadow-[0_0_15px_-5px_rgba(0,0,0,0.05)] rounded-xl cursor-pointer transition-all">
                                         <input type="radio" name="payment" className="w-5 h-5 text-primary-900 mt-0.5" />
                                         <div>
                                             <span className="font-bold text-primary-900 block mb-1">Chuyển khoản ngân hàng</span>
                                             <p className="text-sm text-primary-600">Thực hiện thanh toán vào tài khoản ngân hàng của chúng tôi. Đơn hàng sẽ được xử lý sau khi tiền được nhân.</p>
                                         </div>
                                     </label>
-                                    <label className="flex items-start gap-4 p-5 border-2 border-transparent hover:border-primary-200 bg-white shadow-[0_0_15px_-5px_rgba(0,0,0,0.05)] rounded-2xl cursor-pointer transition-all">
+                                    <label className="flex items-start gap-4 p-5 border-2 border-transparent hover:border-primary-200 bg-white shadow-[0_0_15px_-5px_rgba(0,0,0,0.05)] rounded-xl cursor-pointer transition-all">
                                         <input type="radio" name="payment" className="w-5 h-5 text-primary-900 mt-0.5" disabled />
                                         <div className="opacity-60">
                                             <span className="font-bold text-primary-900 block mb-1 flex items-center gap-2">Thẻ tín dụng/Ghi nợ <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded-full">Bảo trì</span></span>

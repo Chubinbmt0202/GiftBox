@@ -22,17 +22,17 @@ export function Step3Card({ selectedCardId, setSelectedCardId, cardMessage, setC
                                 : 'border-transparent hover:border-gray-200'
                                 }`}
                         >
-                            <div className="aspect-[4/3] bg-[#f4ede4] rounded-2xl mb-4 overflow-hidden relative flex items-center justify-center">
+                            <div className="aspect-[4/3] bg-[#f4ede4] rounded-xl mb-4 overflow-hidden relative flex items-center justify-center">
                                 <img src={card.image} alt={card.name} className="w-full h-full object-cover mix-blend-multiply" />
                                 {selectedCardId === card.id && (
                                     <div className="absolute inset-0 bg-white/20 flex flex-col items-center justify-center">
-                                        <span className="bg-boonie-pink text-white px-3 py-1 rounded-full font-bold text-xs shadow-md">Selected</span>
+                                        <span className="bg-boonie-pink text-white px-3 py-1 rounded-full font-bold text-xs shadow-md">Đã chọn</span>
                                     </div>
                                 )}
                             </div>
                             <div className="px-1 text-center mt-auto">
                                 <h4 className="font-bold text-gray-900 text-sm font-fredoka mb-1 line-clamp-1">{card.name}</h4>
-                                <p className="font-semibold text-boonie-pink text-sm">{card.price.toLocaleString()}₫</p>
+                                <p className="font-semibold text-boonie-pink text-sm">{card.price.toLocaleString('vi-VN')} đ</p>
                             </div>
                         </div>
                     ))}
@@ -41,14 +41,14 @@ export function Step3Card({ selectedCardId, setSelectedCardId, cardMessage, setC
 
             {/* Message Area */}
             <div className="w-full lg:w-96 flex flex-col shrink-0">
-                <div className="bg-white p-6 rounded-3xl border border-transparent shadow-sm flex-1 flex flex-col">
-                    <h3 className="font-fredoka font-bold text-xl text-gray-900 mb-2">Write a Message</h3>
+                <div className="bg-white p-6 rounded-xl border border-transparent shadow-sm flex-1 flex flex-col">
+                    <h3 className="font-fredoka font-bold text-xl text-gray-900 mb-2">Viết lời nhắn</h3>
                     <p className="text-sm text-gray-500 mb-4 font-sans">
-                        We'll handwrite your message on the chosen card.
+                        Chúng tôi sẽ viết tay lời nhắn của bạn lên thiệp.
                     </p>
                     <textarea
-                        className="w-full flex-1 min-h-[200px] p-4 bg-gray-50 border border-gray-100 rounded-2xl resize-none text-gray-900 focus:outline-none focus:ring-2 focus:ring-boonie-pink/50 transition-all font-sans text-sm"
-                        placeholder="Type your lovely message here..."
+                        className="w-full flex-1 min-h-[200px] p-4 bg-gray-50 border border-gray-100 rounded-xl resize-none text-gray-900 focus:outline-none focus:ring-2 focus:ring-boonie-pink/50 transition-all font-sans text-sm"
+                        placeholder="Nhập lời yêu thương của bạn tại đây..."
                         value={cardMessage}
                         onChange={(e) => setCardMessage(e.target.value)}
                     ></textarea>

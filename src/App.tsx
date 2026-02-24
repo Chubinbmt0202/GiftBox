@@ -16,8 +16,8 @@ const App = () => {
           <Route path="/ready-to-ship" element={<ReadyToShip />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/build-a-box" element={<BuildABox />} />
         </Route>
-        <Route path="/build-a-box" element={<BuildABox />} />
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<div>Admin Dashboard Placeholder</div>} />
