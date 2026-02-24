@@ -10,7 +10,8 @@ import {
     LogOut,
     Search,
     Bell,
-    HelpCircle
+    HelpCircle,
+    Tags
 } from "lucide-react";
 
 export function AdminLayout() {
@@ -28,15 +29,16 @@ export function AdminLayout() {
     };
 
     const navItems = [
-        { path: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
-        { path: "/admin/orders", icon: ShoppingCart, label: "Orders", exact: false },
-        { path: "/admin/products", icon: Package, label: "Products", exact: false },
-        { path: "/admin/customers", icon: Users, label: "Customers", exact: false },
-        { path: "/admin/analytics", icon: BarChart2, label: "Analytics", exact: false },
+        { path: "/admin", icon: LayoutDashboard, label: "Bảng điều khiển", exact: true },
+        { path: "/admin/orders", icon: ShoppingCart, label: "Đơn hàng", exact: false },
+        { path: "/admin/products", icon: Package, label: "Sản phẩm", exact: false },
+        { path: "/admin/categories", icon: Tags, label: "Danh mục", exact: false },
+        { path: "/admin/customers", icon: Users, label: "Khách hàng", exact: false },
+        { path: "/admin/analytics", icon: BarChart2, label: "Thống kê", exact: false },
     ];
 
     const systemItems = [
-        { path: "/admin/settings", icon: Settings, label: "Settings", exact: false },
+        { path: "/admin/settings", icon: Settings, label: "Cài đặt", exact: false },
     ];
 
     // Map path to title for the header, or we can just read it from the active nav label
@@ -50,26 +52,20 @@ export function AdminLayout() {
         <div className="min-h-screen flex bg-[#f8f9fa] font-sans">
 
             {/* Sidebar */}
-            <aside className="w-[260px] bg-white border-r border-gray-100 flex-col hidden md:flex shrink-0">
+            <aside className="w-[260px] bg-white border-r border-gray-100 flex-col hidden md:flex shrink-0 sticky top-0 h-screen">
 
                 {/* Logo Area */}
-                <div className="h-16 flex items-center px-6 mb-2">
+                <div className="h-16 flex items-center px-6 mb-2 mt-2">
                     <Link to="/admin" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-[#0066ff] rounded-lg flex items-center justify-center">
                             <Package className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-bold text-[18px] text-gray-900 tracking-tight">AdminDash</span>
+                        <span className="font-bold text-[18px] text-gray-900 tracking-tight">Quản trị</span>
                     </Link>
                 </div>
 
                 {/* User Info (Optional, like in Image 4/5) */}
-                <div className="px-6 mb-6 flex items-center gap-3">
-                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=ffd8cc&color=d9534f" alt="Admin" className="w-10 h-10 rounded-full" />
-                    <div>
-                        <p className="text-sm font-bold text-gray-900 leading-tight">Admin User</p>
-                        <p className="text-[12px] text-gray-500 font-medium">Super Admin</p>
-                    </div>
-                </div>
+
 
                 {/* Navigation */}
                 <div className="flex-1 overflow-y-auto w-full px-4">
@@ -97,7 +93,7 @@ export function AdminLayout() {
 
                     <div className="mb-2">
                         <h4 className="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
-                            System
+                            Hệ thống
                         </h4>
                         <nav className="space-y-1">
                             {systemItems.map((item) => {
@@ -123,13 +119,13 @@ export function AdminLayout() {
                 </div>
 
                 {/* Bottom Actions */}
-                <div className="p-4 mt-auto">
+                <div className="p-4 mt-auto mb-2">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 w-full px-3 py-2.5 text-[14px] font-semibold rounded-xl text-red-600 hover:bg-red-50 transition-colors"
+                        className="flex items-center gap-3 w-full px-3 py-2.5 text-[14px] font-semibold rounded-xl text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                     >
                         <LogOut className="w-5 h-5" />
-                        Sign Out
+                        Đăng xuất
                     </button>
                 </div>
             </aside>
@@ -148,7 +144,7 @@ export function AdminLayout() {
                             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Search..."
+                                placeholder="Tìm kiếm..."
                                 className="w-full pl-9 pr-4 py-2 bg-[#f8f9fa] border-none rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066ff]/20 placeholder:text-gray-400 font-medium"
                             />
                         </div>
